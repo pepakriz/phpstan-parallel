@@ -1,0 +1,70 @@
+{
+	"name": "pepakriz/phpstan-parallel",
+	"description": "PHPStan parallel executor",
+	"license": [
+		"MIT"
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.1-dev"
+		}
+	},
+	"bin": [
+		"bin/phpstan-parallel"
+	],
+	"require": {
+		"php": "^7.1",
+		"nette/utils": "^2.4.5 || ^3.0",
+		"phpstan/phpstan": "^0.10",
+		"symfony/console": "~3.2 || ~4.0",
+		"symfony/finder": "~3.2 || ~4.0",
+		"symfony/process": "~3.2 || ^4.0"
+	},
+	"require-dev": {
+		"cdn77/coding-standard": "^0.7.1",
+		"jakub-onderka/php-console-highlighter": "0.3.2",
+		"jakub-onderka/php-parallel-lint": "1.0.0",
+		"phpunit/phpunit": "^7.1.5",
+		"phpstan/phpstan-phpunit": "^0.10",
+		"phpstan/phpstan-nette": "^0.10",
+		"phpstan/phpstan-strict-rules": "^0.10",
+		"slevomat/coding-standard": "^4.8.3",
+		"satooshi/php-coveralls": "^2.0",
+		"squizlabs/php_codesniffer": "~3.3.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Pepakriz\\PHPParallel\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Pepakriz\\PHPParallel\\": "tests/src/"
+		},
+		"classmap": [
+			"tests/src"
+		]
+	},
+	"scripts": {
+		"check": [
+			"@check:composer",
+			"@check:lint",
+			"@check:cs",
+			"@check:types",
+			"@check:tests"
+		],
+		"check:composer": "composer validate",
+		"check:tests": "phpunit --coverage-text",
+		"check:cs": "phpcs --extensions=php --encoding=utf-8 --tab-width=4 --colors --ignore=tests/*/data -sp src tests/src",
+		"check:lint": "parallel-lint src tests/src",
+		"check:types": "phpstan analyse -l max src tests",
+		"fix": "@fix:cs",
+		"fix:cs": "phpcbf --extensions=php --encoding=utf-8 --tab-width=4 --colors --ignore=tests/*/data -sp src tests/src",
+		"coveralls": "php-coveralls -v"
+	},
+	"config": {
+		"sort-packages": true
+	}
+}

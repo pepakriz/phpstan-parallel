@@ -1,0 +1,39 @@
+parameters:
+	exceptionRules:
+		reportUnusedCatchesOfUncheckedExceptions: false
+		checkedExceptions: []
+		uncheckedExceptions: []
+		methodThrowTypeDeclarations: []
+		functionThrowTypeDeclarations: []
+
+extensions:
+	exceptionRules: Pepakriz\PHPParallel\DI\ExceptionRulesExtension
+
+services:
+	-
+		class: Pepakriz\PHPParallel\CheckedExceptionService(%exceptionRules.checkedExceptions%, %exceptionRules.uncheckedExceptions%)
+
+	-
+		class: Pepakriz\PHPParallel\DefaultThrowTypeService(%exceptionRules.methodThrowTypeDeclarations%, %exceptionRules.functionThrowTypeDeclarations%)
+
+	-
+		class: Pepakriz\PHPParallel\DefaultThrowTypeExtension
+		tags:
+			- exceptionRules.dynamicMethodThrowTypeExtension
+			- exceptionRules.dynamicStaticMethodThrowTypeExtension
+			- exceptionRules.dynamicConstructorThrowTypeExtension
+			- exceptionRules.dynamicFunctionThrowTypeExtension
+
+	-
+		class: Pepakriz\PHPParallel\Rules\ThrowsPhpDocRule
+		arguments:
+			reportUnusedCatchesOfUncheckedExceptions: %exceptionRules.reportUnusedCatchesOfUncheckedExceptions%
+		tags: [phpstan.rules.rule]
+
+	-
+		class: Pepakriz\PHPParallel\Rules\ThrowsPhpDocInheritanceRule
+		tags: [phpstan.rules.rule]
+
+	-
+		class: Pepakriz\PHPParallel\Rules\UnreachableCatchRule
+		tags: [phpstan.rules.rule]
