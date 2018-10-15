@@ -1,0 +1,8 @@
+------ -----------------------------------------------
+  Line   tests/ErrorData/Errors.php
+ ------ -----------------------------------------------
+  13     Access to an undefined property
+         Pepakriz\PHPParallel\ErrorData\Errors::$data.
+ ------ -----------------------------------------------
+
+ [ERROR] Found 1 error

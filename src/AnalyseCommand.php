@@ -164,8 +164,9 @@ class AnalyseCommand extends PHPStanAnalyseCommand
 			}
 		}
 
-		$fileChunks = array_chunk($files, (int) ceil(count($files) / $processes));
-		$consoleStyle->progressStart(count($files));
+		$fileCounter = count($files);
+		$fileChunks = $fileCounter > 0 ? array_chunk($files, (int) ceil($fileCounter / $processes)) : [];
+		$consoleStyle->progressStart($fileCounter);
 
 		/** @var Process[] $processes */
 		$processes = [];
@@ -187,6 +188,8 @@ class AnalyseCommand extends PHPStanAnalyseCommand
 				$cmd[] = $autoloadFile;
 			}
 
+			$cmd[] = '--level';
+			$cmd[] = $levelOption ?? '0';
 			$cmd[] = '--error-format';
 			$cmd[] = 'json';
 			$cmd = array_merge($cmd, $fileChunk);
@@ -231,7 +234,7 @@ class AnalyseCommand extends PHPStanAnalyseCommand
 			$nonFileSpecificErrors = array_merge($nonFileSpecificErrors, $analysisResult->getNotFileSpecificErrors());
 		}
 
-		$analysisResult = new AnalysisResult($fileSpecificErrors, $nonFileSpecificErrors, $container->parameters['customRulesetUsed'], $currentWorkingDirectory);
+		$analysisResult = new AnalysisResult($fileSpecificErrors, $nonFileSpecificErrors, false, $currentWorkingDirectory);
 		$errorFormatterServiceName = sprintf('errorFormatter.%s', $errorFormat);
 		if (!$container->hasService($errorFormatterServiceName)) {
 			$errOutput->writeln(sprintf(
@@ -261,6 +264,10 @@ class AnalyseCommand extends PHPStanAnalyseCommand
 		try {
 			$data = Json::decode($data, Json::FORCE_ARRAY);
 		} catch (JsonException $e) {
+			if ($data === '') {
+				$data = $process->getErrorOutput();
+			}
+
 			return new AnalysisResult([], ['Unexpected output from subprocess: ' . $data], false, '');
 		}
 

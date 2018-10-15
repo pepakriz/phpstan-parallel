@@ -1,0 +1,2 @@
+Note: Using configuration file /data/srv/http/phpstan-parallel/phpstan.neon.dist.
+    0 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]
